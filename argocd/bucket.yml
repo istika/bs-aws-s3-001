@@ -1,0 +1,189 @@
+apiVersion: s3.aws.upbound.io/v1beta1
+kind: Bucket
+metadata:
+  name: crossplane-bucket-6nzhz
+spec:
+  forProvider:
+    region: us-east-2
+    tags:
+      environment: dev
+      team: team-a
+      owner: platform-team
+      managed-by: crossplane
+      project: demo
+      cost-center: cc-1234
+      cd: argocd
+  providerConfigRef:
+    name: default
+---
+apiVersion: s3.aws.upbound.io/v1beta1
+kind: BucketOwnershipControls
+metadata:
+  name: crossplane-bucket-6nzhz-ownership
+spec:
+  forProvider:
+    bucketRef:
+      name: crossplane-bucket-6nzhz
+    region: us-east-2
+    rule:
+      - objectOwnership: BucketOwnerPreferred
+  providerConfigRef:
+    name: default
+---
+apiVersion: s3.aws.upbound.io/v1beta1
+kind: BucketPublicAccessBlock
+metadata:
+  name: crossplane-bucket-6nzhz-public-access
+spec:
+  forProvider:
+    bucketRef:
+      name: crossplane-bucket-6nzhz
+    region: us-east-2
+    blockPublicAcls: false
+    blockPublicPolicy: false
+    ignorePublicAcls: false
+    restrictPublicBuckets: false
+  providerConfigRef:
+    name: default
+---
+apiVersion: s3.aws.upbound.io/v1beta1
+kind: BucketWebsiteConfiguration
+metadata:
+  name: crossplane-bucket-6nzhz-website
+spec:
+  forProvider:
+    bucketRef:
+      name: crossplane-bucket-6nzhz
+    region: us-east-2
+    indexDocument:
+      - suffix: index.html
+    errorDocument:
+      - key: index.html
+  providerConfigRef:
+    name: default
+---
+apiVersion: s3.aws.upbound.io/v1beta1
+kind: BucketPolicy
+metadata:
+  name: crossplane-bucket-6nzhz-policy
+spec:
+  forProvider:
+    bucketRef:
+      name: crossplane-bucket-6nzhz
+    region: us-east-2
+    policy: |
+      {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Sid": "PublicReadGetObject",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::crossplane-bucket-6nzhz/*"
+          }
+        ]
+      }
+  providerConfigRef:
+    name: default
+---
+apiVersion: s3.aws.upbound.io/v1beta1
+kind: BucketObject
+metadata:
+  name: crossplane-bucket-6nzhz-index
+spec:
+  forProvider:
+    bucketRef:
+      name: crossplane-bucket-6nzhz
+    region: us-east-2
+    key: index.html
+    contentType: text/html
+    content: |
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Hello World</title>
+        <style>
+          * { margin: 0; padding: 0; box-sizing: border-box; }
+          body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            overflow: hidden;
+          }
+          .container {
+            text-align: center;
+            animation: fadeIn 1.5s ease-out;
+          }
+          h1 {
+            font-size: 5rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, #f7797d, #FBD786, #C6FFDD, #6dd5ed, #f7797d);
+            background-size: 300% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer 4s ease-in-out infinite;
+          }
+          p {
+            margin-top: 1rem;
+            font-size: 1.25rem;
+            color: rgba(255,255,255,0.6);
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+          }
+          .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            animation: float 8s ease-in-out infinite;
+          }
+          .orb-1 { width: 400px; height: 400px; background: #f7797d; top: -10%; left: -5%; }
+          .orb-2 { width: 350px; height: 350px; background: #6dd5ed; bottom: -10%; right: -5%; animation-delay: 3s; }
+          .orb-3 { width: 250px; height: 250px; background: #C6FFDD; top: 50%; left: 60%; animation-delay: 5s; }
+          @keyframes shimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+          }
+          @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+          @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(30px, -30px); }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="container">
+          <h1>Hello World</h1>
+          <p>Deployed with Crossplane &amp; ArgoCD</p>
+        </div>
+      </body>
+      </html>
+  providerConfigRef:
+    name: default
+---
+apiVersion: s3.aws.upbound.io/v1beta1
+kind: BucketVersioning
+metadata:
+  name: crossplane-bucket-6nzhz-versioning
+spec:
+  forProvider:
+    bucketRef:
+      name: crossplane-bucket-6nzhz
+    region: us-east-2
+    versioningConfiguration:
+      - status: Enabled
+  providerConfigRef:
+    name: default
